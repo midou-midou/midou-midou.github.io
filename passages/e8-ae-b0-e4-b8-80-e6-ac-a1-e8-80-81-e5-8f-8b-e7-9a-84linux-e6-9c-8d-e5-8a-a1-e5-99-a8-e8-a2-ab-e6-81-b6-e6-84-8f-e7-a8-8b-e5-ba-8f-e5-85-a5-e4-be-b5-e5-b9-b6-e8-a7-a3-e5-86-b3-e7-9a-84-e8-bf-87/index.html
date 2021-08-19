@@ -11,7 +11,7 @@
   <meta name="description" content="首先放一个老友的连接：http:&#x2F;&#x2F;yuyy.info 恶意程序名称：javaUpdate 可能是这个 最近的日子正是毕业的日子，也是最忙的日子。老友给我发了条信息 我去，怎么就中招了呢 通过ssh登录老友的服务器，发现登录的时候要卡很久，通过强制中断ctrl+c才能看见用户提示符 用top命令查看下现阶段运行进程情况，top命令简单说就是监控Linux中运行的进程的在系统中情况 好家伙 通常的这">
 <meta property="og:type" content="article">
 <meta property="og:title" content="记一次老友的Linux服务器被恶意程序入侵并解决的过程">
-<meta property="og:url" content="https://mimonatch.github.io/passages/e8-ae-b0-e4-b8-80-e6-ac-a1-e8-80-81-e5-8f-8b-e7-9a-84linux-e6-9c-8d-e5-8a-a1-e5-99-a8-e8-a2-ab-e6-81-b6-e6-84-8f-e7-a8-8b-e5-ba-8f-e5-85-a5-e4-be-b5-e5-b9-b6-e8-a7-a3-e5-86-b3-e7-9a-84-e8-bf-87/index.html">
+<meta property="og:url" content="http://mimonatch.github.io/passages/e8-ae-b0-e4-b8-80-e6-ac-a1-e8-80-81-e5-8f-8b-e7-9a-84linux-e6-9c-8d-e5-8a-a1-e5-99-a8-e8-a2-ab-e6-81-b6-e6-84-8f-e7-a8-8b-e5-ba-8f-e5-85-a5-e4-be-b5-e5-b9-b6-e8-a7-a3-e5-86-b3-e7-9a-84-e8-bf-87/index.html">
 <meta property="og:site_name" content="集合">
 <meta property="og:description" content="首先放一个老友的连接：http:&#x2F;&#x2F;yuyy.info 恶意程序名称：javaUpdate 可能是这个 最近的日子正是毕业的日子，也是最忙的日子。老友给我发了条信息 我去，怎么就中招了呢 通过ssh登录老友的服务器，发现登录的时候要卡很久，通过强制中断ctrl+c才能看见用户提示符 用top命令查看下现阶段运行进程情况，top命令简单说就是监控Linux中运行的进程的在系统中情况 好家伙 通常的这">
 <meta property="og:locale" content="zh_CN">
@@ -64,7 +64,7 @@
         <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
       </nav>
       <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://mimonatch.github.io"></form>
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://mimonatch.github.io"></form>
       </div>
     </div>
   </div>
@@ -179,7 +179,7 @@
     </div>
     
     <footer class="article-footer">
-      <a data-url="https://mimonatch.github.io/passages/e8-ae-b0-e4-b8-80-e6-ac-a1-e8-80-81-e5-8f-8b-e7-9a-84linux-e6-9c-8d-e5-8a-a1-e5-99-a8-e8-a2-ab-e6-81-b6-e6-84-8f-e7-a8-8b-e5-ba-8f-e5-85-a5-e4-be-b5-e5-b9-b6-e8-a7-a3-e5-86-b3-e7-9a-84-e8-bf-87/" data-id="cksi91qoj001gh0q05sbe9ave" class="article-share-link">Share</a>
+      <a data-url="http://mimonatch.github.io/passages/e8-ae-b0-e4-b8-80-e6-ac-a1-e8-80-81-e5-8f-8b-e7-9a-84linux-e6-9c-8d-e5-8a-a1-e5-99-a8-e8-a2-ab-e6-81-b6-e6-84-8f-e7-a8-8b-e5-ba-8f-e5-85-a5-e4-be-b5-e5-b9-b6-e8-a7-a3-e5-86-b3-e7-9a-84-e8-bf-87/" data-id="cksi9gu4i001ea0q0g3t4hpqf" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%81%B6%E6%84%8F%E5%85%A5%E4%BE%B5Linux%E6%9C%8D%E5%8A%A1%E5%99%A8/" rel="tag">恶意入侵Linux服务器</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%8C%96%E7%9F%BF/" rel="tag">挖矿</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%BF%90%E7%BB%B4%E5%AE%89%E5%85%A8/" rel="tag">运维安全</a></li></ul>

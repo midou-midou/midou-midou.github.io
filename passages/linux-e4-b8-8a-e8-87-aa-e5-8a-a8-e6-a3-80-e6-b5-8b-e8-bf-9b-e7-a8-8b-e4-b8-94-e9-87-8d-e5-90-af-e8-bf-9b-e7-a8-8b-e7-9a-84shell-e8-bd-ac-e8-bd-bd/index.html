@@ -11,7 +11,7 @@
   <meta name="description" content="原文链接： https:&#x2F;&#x2F;www.jb51.net&#x2F;article&#x2F;43961.htm 前几天服务器有一个长期运行的进程，提供服务。但是总是遇到进程被kill的情况。总是有小伙伴给我抱怨，我的思路就是用ps命令通过管道给grep之后通过字符串的处理提取出进程号，或者进程的名字。判断如果不存在就通过nohup &amp;重启这个进程。但也想看一看还有什么别的办法。所以闲来搜索下有关的shell，也">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Linux上自动检测进程且重启进程的shell(转载)">
-<meta property="og:url" content="https://mimonatch.github.io/passages/linux-e4-b8-8a-e8-87-aa-e5-8a-a8-e6-a3-80-e6-b5-8b-e8-bf-9b-e7-a8-8b-e4-b8-94-e9-87-8d-e5-90-af-e8-bf-9b-e7-a8-8b-e7-9a-84shell-e8-bd-ac-e8-bd-bd/index.html">
+<meta property="og:url" content="http://mimonatch.github.io/passages/linux-e4-b8-8a-e8-87-aa-e5-8a-a8-e6-a3-80-e6-b5-8b-e8-bf-9b-e7-a8-8b-e4-b8-94-e9-87-8d-e5-90-af-e8-bf-9b-e7-a8-8b-e7-9a-84shell-e8-bd-ac-e8-bd-bd/index.html">
 <meta property="og:site_name" content="集合">
 <meta property="og:description" content="原文链接： https:&#x2F;&#x2F;www.jb51.net&#x2F;article&#x2F;43961.htm 前几天服务器有一个长期运行的进程，提供服务。但是总是遇到进程被kill的情况。总是有小伙伴给我抱怨，我的思路就是用ps命令通过管道给grep之后通过字符串的处理提取出进程号，或者进程的名字。判断如果不存在就通过nohup &amp;重启这个进程。但也想看一看还有什么别的办法。所以闲来搜索下有关的shell，也">
 <meta property="og:locale" content="zh_CN">
@@ -64,7 +64,7 @@
         <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
       </nav>
       <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://mimonatch.github.io"></form>
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://mimonatch.github.io"></form>
       </div>
     </div>
   </div>
@@ -165,7 +165,7 @@ nohup $PNAME &gt;/dev/null
     </div>
     
     <footer class="article-footer">
-      <a data-url="https://mimonatch.github.io/passages/linux-e4-b8-8a-e8-87-aa-e5-8a-a8-e6-a3-80-e6-b5-8b-e8-bf-9b-e7-a8-8b-e4-b8-94-e9-87-8d-e5-90-af-e8-bf-9b-e7-a8-8b-e7-9a-84shell-e8-bd-ac-e8-bd-bd/" data-id="cksi91qom001rh0q05mg0f8ku" class="article-share-link">Share</a>
+      <a data-url="http://mimonatch.github.io/passages/linux-e4-b8-8a-e8-87-aa-e5-8a-a8-e6-a3-80-e6-b5-8b-e8-bf-9b-e7-a8-8b-e4-b8-94-e9-87-8d-e5-90-af-e8-bf-9b-e7-a8-8b-e7-9a-84shell-e8-bd-ac-e8-bd-bd/" data-id="cksi9gu4m001ra0q0e4yn67ts" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/shell/" rel="tag">shell</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96/" rel="tag">自动化</a></li></ul>

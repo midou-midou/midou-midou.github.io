@@ -7,7 +7,6 @@
   
   <title>Linux上自动检测进程且重启进程的shell(转载) | 集合</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
   <meta name="description" content="原文链接： https:&#x2F;&#x2F;www.jb51.net&#x2F;article&#x2F;43961.htm 前几天服务器有一个长期运行的进程，提供服务。但是总是遇到进程被kill的情况。总是有小伙伴给我抱怨，我的思路就是用ps命令通过管道给grep之后通过字符串的处理提取出进程号，或者进程的名字。判断如果不存在就通过nohup &amp;重启这个进程。但也想看一看还有什么别的办法。所以闲来搜索下有关的shell，也">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Linux上自动检测进程且重启进程的shell(转载)">
@@ -173,7 +172,6 @@ nohup $PNAME &gt;/dev/null
     </footer>
   </div>
   <br />
-  <div id="vcomments"></div>
   
     
 <nav id="article-nav">
